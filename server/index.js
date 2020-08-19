@@ -1,0 +1,62 @@
+var express = require('express');
+var WebSocket = require('ws')
+var app = express();
+var server = new WebSocket.Server({server : app.listen(3333)});
+
+
+
+app.use(express.static('client'));
+
+console.log('socket server is running');
+
+
+
+server.on('connection', socket => {
+    const users = [];
+    const maxTime =    30000;
+    const activeUsers = [{videoUrl : 'placeholder1',
+                          user : null,
+                          time : null},
+                        {videoUrl : 'placeholder2',
+                         user : null,
+                         time : null},
+                        {videoUrl : 'placeholder3',
+                         user : null,
+                        time : null}];
+    socket.on('message', message => {
+      users.push(message);
+      console.log(users)
+    });
+    setInterval(() => {
+        console.log(users);
+        console.log('active: ',activeUsers)
+                for (var j = 0; j < activeUsers.length; j++) {
+                    activeUsers.time = activeUsers.time - 1000;
+                }
+        
+                for(var i = 0; i < activeUsers.length; i++) {
+                    if(activeUsers[i].user === null) {
+                        activeUsers[i].user = users[0];
+                        users.shift();
+                        activeUsers[i].time = new Date();
+                        socket.send("You can now enter the 3D verse!", activeUsers[i].videoUrl)
+                    } else if (checkTimeOut(activeUsers[i])) {
+                        activeUsers[i].user = null;
+                        socket.send("Times Up!")
+                    }
+                }
+                socket.send(JSON.stringify(activeUsers));
+                socket.send(JSON.stringify(users));
+            }, 1000)
+
+            function checkTimeOut (user) {
+                        const currentTime = new Date()
+                        if(currentTime - user.time >= maxTime) {
+                            return true;
+                        } else {
+                            return false;
+                        }}
+  });
+
+
+

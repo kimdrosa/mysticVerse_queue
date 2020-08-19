@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    </head>
+    <body> hi
+    <script>
+        {
+            const socket = new WebSocket('ws://localhost:3333');
+ 
+socket.addEventListener('open', () => {
+  socket.send('xochi');
+  socket.send('appa');
+  socket.send('momo');
+  socket.send('belmont');
+
+});
+ 
+socket.addEventListener('message', event => {
+  console.log(`Message from server: ${event.data}`);
+});
+        }
+// { 
+//     const WebSocketClient = require('websocket').client;
+
+//     const client = new WebSocketClient;
+
+
+// ws.send('hello');
+
+// ws.onmessage = (event) => {
+//     console.log(event.data)
+// }
+
+// client.connect('wss://localhost:3333')}
+</script>
+ </body>
+
+</html>
