@@ -9,10 +9,9 @@
  
 socket.addEventListener('open', () => {
   socket.send('xochi');
+  socket.send('gavin');
   socket.send('appa');
   socket.send('momo');
-  socket.send('belmont');
-
 });
  
 socket.addEventListener('message', event => {

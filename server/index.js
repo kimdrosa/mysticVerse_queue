@@ -7,46 +7,58 @@ var server = new WebSocket.Server({server : app.listen(3333)});
 
 app.use(express.static('client'));
 
-console.log('socket server is running');
+console.log('socket server is running on port 3333');
 
-
-
-server.on('connection', socket => {
-    const users = [];
-    const maxTime =    30000;
-    const activeUsers = [{videoUrl : 'placeholder1',
+const users = [];
+const maxTime =  60000;
+const userList = [];
+const activeUserList = [];
+const activeUsers = [{videoUrl : 'placeholder1',
                           user : null,
+                          connection : null,
                           time : null},
                         {videoUrl : 'placeholder2',
                          user : null,
+                         connection : null,
                          time : null},
                         {videoUrl : 'placeholder3',
                          user : null,
-                        time : null}];
+                         connection : null,
+                         time : null}];
+
+
+server.on('connection', (socket) => {
+    
     socket.on('message', message => {
-      users.push(message);
-      console.log(users)
+      users.push({
+                  user: message,
+                  connection : socket
+                })
+      userList.push(message);
     });
-    setInterval(() => {
-        console.log(users);
-        console.log('active: ',activeUsers)
-                for (var j = 0; j < activeUsers.length; j++) {
-                    activeUsers.time = activeUsers.time - 1000;
-                }
-        
+    setInterval(() => {  
+        console.log(userList);
                 for(var i = 0; i < activeUsers.length; i++) {
                     if(activeUsers[i].user === null) {
-                        activeUsers[i].user = users[0];
+                        if(users.length > 0) {
+                        activeUsers[i].user = users[0].user;
+                        activeUserList.push(userList[0]);
+                        activeUsers[i].connection = users[0].connection;
                         users.shift();
+                        userList.shift();
                         activeUsers[i].time = new Date();
-                        socket.send("You can now enter the 3D verse!", activeUsers[i].videoUrl)
+                        activeUsers[i].connection.send("You can now enter the 3D verse!", activeUsers[i].videoUrl);
+                        }
                     } else if (checkTimeOut(activeUsers[i])) {
                         activeUsers[i].user = null;
-                        socket.send("Times Up!")
+                        activeUserList.shift();
+                        activeUsers[i].connection.send("Times Up!")
                     }
                 }
-                socket.send(JSON.stringify(activeUsers));
-                socket.send(JSON.stringify(users));
+            
+                socket.send(JSON.stringify(userList));
+                socket.send(JSON.stringify(activeUserList));
+                
             }, 1000)
 
             function checkTimeOut (user) {
