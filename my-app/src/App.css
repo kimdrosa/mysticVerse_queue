@@ -56,5 +56,5 @@
 #userLists {
   display: grid;
   grid-template-rows: 50% 50%;
-  margin-bottom: 50px;
+  margin-bottom: 40px;
 }

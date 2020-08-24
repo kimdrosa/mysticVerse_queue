@@ -17,7 +17,9 @@ class App extends React.Component {
     constructor(props) {
         super(props);
         this.joinQueue = this.joinQueue.bind(this);
+        this.leaveQueue = this.leaveQueue.bind(this);
         this.state = {
+            user : null,
             videoURL : null,
             users : null,
             activeUsers : null,
@@ -62,13 +64,21 @@ class App extends React.Component {
             }
       };
     
+    //when the user decides to join the 3d verse (puts you in the world if it is not full and the queue if it is full)
     joinQueue() {
       socket.send('playaName');
       this.setState({
         isInQueue: true, 
+        user : 'playaName'
       })
     }
 
+    //when a user decides to leave the queue
+    leaveQueue(){
+
+    }
+
+    
 
 
     render() {
@@ -92,7 +102,7 @@ class App extends React.Component {
                 </div>
                 <div>
       <p><b>Number of people waiting: {this.state.queueUsers.length.toString()}</b></p>
-              <Button onClick={this.joinQueue}>Join Queue</Button>
+              <Button onClick={this.joinQueue}>Join</Button>
               </div>
               </Card.Body>
             </Accordion.Collapse>
@@ -120,7 +130,33 @@ class App extends React.Component {
           </Modal.Footer>
         </Modal.Dialog>
       )
-    } else {
+    } else if(!this.state.showEnter && !this.state.showTimesUp && this.state.activeUsers != null && this.state.queueUsers != null && this.state.isInQueue) {
+      console.log(this.state.activeUsers)
+    return (
+      <Accordion>
+        <Card>
+        
+          <Accordion.Toggle id="queueToggle" as={Button} variant='primary' eventKey="1">
+              Enter The 3D Verse
+             
+          </Accordion.Toggle>
+        
+          <Accordion.Collapse eventKey="1">
+            <Card.Body> 
+              <div id='userLists'>
+                <ListOfActiveUsers users={this.state.activeUsers}/>
+                <ListOfQueueUsers users={this.state.queueUsers}/>
+              </div>
+              <div>
+    <p><b>Number of people waiting: {this.state.queueUsers.length.toString()}</b></p>
+            <Button onClick={this.leaveQueue}>Leave</Button>
+            </div>
+            </Card.Body>
+          </Accordion.Collapse>
+        </Card>
+      </Accordion>
+);
+}else {
       return (
         <Accordion>
           <Card>
