@@ -1,11 +1,19 @@
 var express = require('express');
+const path = require('path');
+
+
 var WebSocket = require('ws')
 var app = express();
+
+
+app.use(express.static(path.join(__dirname, '../build')));
+app.get('/', function(req, res) {
+  res.sendFile(path.join(__dirname, 'build', 'index.html'));
+});
+
 var server = new WebSocket.Server({server : app.listen(3333)});
 
-
-
-app.use(express.static('public'));
+// app.use(express.static('public'));
 
 console.log('socket server is running on port 3333');
 
@@ -13,15 +21,15 @@ const users = [];
 const maxTime =  60000;
 const userList = [];
 const activeUserList = [];
-const activeUsers = [{videoUrl : 'placeholder1',
+const activeUsers = [{videoUrl : "https://en.wikipedia.org/wiki/Leprus_intermedius",
                           user : null,
                           connection : null,
                           time : null},
-                        {videoUrl : 'placeholder2',
+                        {videoUrl : "https://en.wikipedia.org/wiki/Bishkek-1_railway_station",
                          user : null,
                          connection : null,
                          time : null},
-                        {videoUrl : 'placeholder3',
+                        {videoUrl : "https://en.wikipedia.org/wiki/Schefflera_pueckleri",
                          user : null,
                          connection : null,
                          time : null}];
@@ -47,7 +55,7 @@ server.on('connection', (socket) => {
                         users.shift();
                         userList.shift();
                         activeUsers[i].time = new Date();
-                        activeUsers[i].connection.send("You can now enter the 3D verse!", activeUsers[i].videoUrl);
+                        activeUsers[i].connection.send('{"videoUrl":' + JSON.stringify(activeUsers[i].videoUrl) + '}');
                         }
                     } else if (checkTimeOut(activeUsers[i])) {
                         activeUsers[i].user = null;
@@ -56,8 +64,8 @@ server.on('connection', (socket) => {
                     }
                 }
             
-                socket.send(JSON.stringify(userList));
-                socket.send(JSON.stringify(activeUserList));
+                socket.send('{ "users":' + JSON.stringify(userList) + ',"activeUsers":' + JSON.stringify(activeUserList) + '}');
+             
                 
             }, 1000)
 

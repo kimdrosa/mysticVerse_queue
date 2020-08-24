@@ -36,3 +36,9 @@
     transform: rotate(360deg);
   }
 }
+
+#queueToggle {
+  width : 200px;
+  height: 40px;
+
+} 

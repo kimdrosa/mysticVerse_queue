@@ -28,7 +28,7 @@
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
-    <div id="root"></div>
+    <div id="root"> </div>
     <!--
       This HTML file is a template.
       If you open it directly in the browser, you will see an empty page.
@@ -39,22 +39,6 @@
       To begin the development, run `npm start` or `yarn start`.
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
-    <script>
-      {
-          const socket = new WebSocket('ws://localhost:3333');
 
-          socket.addEventListener('open', () => {
-          socket.send('xochi');
-          socket.send('gavin');
-          socket.send('appa');
-          socket.send('momo');
-          });
-
-          socket.addEventListener('message', event => {
-          console.log(`Message from server: ${event.data}`);
-          });
-                }
-
-      </script>
   </body>
 </html>
