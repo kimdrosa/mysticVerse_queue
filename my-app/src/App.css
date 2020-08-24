@@ -37,8 +37,24 @@
   }
 }
 
+.listOfActiveUsers {
+  grid-row: 1;
+  grid-column: 1;
+}
+
+.listOfQueueUsers {
+  grid-row: 1;
+  grid-column: 2;
+}
+
 #queueToggle {
   width : 200px;
   height: 40px;
 
 } 
+
+#userLists {
+  display: grid;
+  grid-template-rows: 50% 50%;
+  margin-bottom: 50px;
+}

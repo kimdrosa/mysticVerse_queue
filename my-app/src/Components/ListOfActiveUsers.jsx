@@ -12,7 +12,7 @@ class ListOfActiveUsers extends React.Component{
         if(this.props.users.length) {
         return (
         <div className='listOfActiveUsers'>
-            <h6>Users On The Playa</h6>
+            <h5><b>Currently Exploring</b></h5>
             {this.props.users.map(user => {
            return ( <ActiveUser user={user}/>)
             })}

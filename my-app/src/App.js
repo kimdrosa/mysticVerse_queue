@@ -90,51 +90,28 @@ class App extends React.Component {
                   <ListOfActiveUsers users={this.state.activeUsers}/>
                   <ListOfQueueUsers users={this.state.queueUsers}/>
                 </div>
+                <div>
+      <p><b>Number of people waiting: {this.state.queueUsers.length.toString()}</b></p>
               <Button onClick={this.joinQueue}>Join Queue</Button>
-
+              </div>
               </Card.Body>
             </Accordion.Collapse>
           </Card>
         </Accordion>
   );
-  } else if(!this.state.showEnter && !this.state.showTimesUp && this.state.activeUsers != null) {
-    console.log(this.state.activeUsers)
-  return (
-    <Accordion>
-      <Card>
-      
-        <Accordion.Toggle id="queueToggle" as={Button} variant='primary' eventKey="1">
-            Enter The 3D Verse
-           
-        </Accordion.Toggle>
-      
-        <Accordion.Collapse eventKey="1">
-          <Card.Body> 
-            <div id='userLists'>
-              <ListOfActiveUsers users={this.state.activeUsers}/>
-            </div>
-          <Button onClick={this.joinQueue}>Join Queue</Button>
-
-          </Card.Body>
-        </Accordion.Collapse>
-      </Card>
-    </Accordion>
-  );
-
-
-  } else if(this.state.showEnter) {
+} else if(this.state.showEnter) {
           return(
             <Modal.Dialog>
               <Modal.Body> 
                 You may now enter the 3D verse!
               </Modal.Body>
               <Modal.Footer>
-                <Button variant='primary' href={this.state.videoURL}>Enter</Button>
+                <Button variant='primary' href={this.state.videoURL} target="_blank">Enter</Button>
                 <Button variant='primary' onClick={()=>{this.setState({showEnter:false})}}>Close</Button>
               </Modal.Footer>
             </Modal.Dialog>
           )
-        } else if(this.state.showTimesUp) {
+    } else if(this.state.showTimesUp) {
       return(
         <Modal.Dialog>
           <Modal.Body> Times Up!</Modal.Body>
@@ -143,29 +120,6 @@ class App extends React.Component {
           </Modal.Footer>
         </Modal.Dialog>
       )
-    } else if(!this.state.showEnter && !this.state.showTimesUp && this.state.queueUsers != null) {
-      console.log(this.state.activeUsers)
-    return (
-      <Accordion>
-        <Card>
-        
-          <Accordion.Toggle id="queueToggle" as={Button} variant='primary' eventKey="1">
-              Enter The 3D Verse
-             
-          </Accordion.Toggle>
-        
-          <Accordion.Collapse eventKey="1">
-            <Card.Body> 
-              <div id='userLists'>
-                <ListOfQueueUsers users={this.state.queueUsers}/>
-              </div>
-            <Button onClick={this.joinQueue}>Join Queue</Button>
-
-            </Card.Body>
-          </Accordion.Collapse>
-        </Card>
-      </Accordion>
-      );
     } else {
       return (
         <Accordion>

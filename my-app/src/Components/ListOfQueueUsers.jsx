@@ -10,9 +10,9 @@ class ListOfQueueUsers extends React.Component{
     render(){
         if(this.props.users.length) {
         return (
-         <div className='listOfUsers'>
+         <div className='listOfQueueUsers'>
             
-            <h6>Waiting in the Queue</h6>
+            <h5><b>Waiting in the Queue</b></h5>
         
             {this.props.users.map(user => {
                 return ( <QueueUser user={user}/> )
