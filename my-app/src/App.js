@@ -10,8 +10,8 @@ import Modal from 'react-bootstrap/Modal';
 
 
 
-
-const socket = new WebSocket('ws://localhost:3333');
+const timeInMinutes = 30;
+let socket = new WebSocket('ws://localhost:3333');
 
 class App extends React.Component { 
     constructor(props) {
@@ -34,36 +34,7 @@ class App extends React.Component {
    
 
     componentDidMount(){
-      // this.openWebSocket();
-        // socket.onopen = () => {
-        //     console.log('connection open')
-        //     }
-  
-        //     socket.onmessage = event => {
-        //       console.log(`Message from server: ${event.data}`);
-        //       //if the message from the server starts with u then it has the user lists in it
-        //       if(event.data[3] === 'u'){
-        //       const allUsers = JSON.parse(event.data)
-        //       console.log('all users: ' + allUsers)
-        //       this.setState({
-        //           users : allUsers,
-        //           activeUsers : allUsers.activeUsers,
-        //           queueUsers : allUsers.users
-        //           })
-        //       //if it starts with v then it is the URL for the video endpoint
-        //       } else if (event.data[2] === 'v') {
-        //         const url = JSON.parse(event.data)
-        //         this.setState({
-        //           showEnter: true,
-        //           videoURL: url.videoUrl
-        //           }) 
-        //       //if it starts with T then it is telling the user that time is up
-        //       } else if(event.data[2] === 'T') {
-        //         this.setState({
-        //           showTimesUp: true
-        //           }) 
-        //         }
-        //     }
+
       };
     
     openWebSocket() {
@@ -72,11 +43,9 @@ class App extends React.Component {
         }
 
         socket.onmessage = event => {
-          console.log(`Message from server: ${event.data}`);
           //if the message from the server starts with u then it has the user lists in it
           if(event.data[3] === 'u'){
-          const allUsers = JSON.parse(event.data)
-          console.log('all users: ' + allUsers)
+          const allUsers = JSON.parse(event.data);
           this.setState({
               users : allUsers,
               activeUsers : allUsers.activeUsers,
@@ -90,15 +59,14 @@ class App extends React.Component {
               videoURL: url.videoUrl
               }) 
           //if it starts with T then it is telling the user that time is up
-          } else if(event.data[2] === 'T') {
+          } else if(event.data === 'Times Up') {
             this.setState({
-              showTimesUp: true
+              showTimesUp: true,
+              isInQueue: false
               }) 
             }
         }
-        // socket.onclose = () => {
-        //   this.openWebSocket()
-        // }
+
     }
     //when the user decides to join the 3d verse (puts you in the world if it is not full and the queue if it is full)
     joinQueue() {
@@ -117,11 +85,17 @@ class App extends React.Component {
 
     //when a user decides to leave the queue
     leaveQueue(){
-      socket.close();
       this.setState({
-        isInQueue: false
-      })
+        isInQueue: false,
+        showEnter: false,
+        showTimesUp: false
 
+      })
+      socket.close();
+      socket = new WebSocket('ws://localhost:3333');
+      socket.onopen = () => {
+        console.log('connection open')
+      }
     }
 
     
@@ -129,8 +103,7 @@ class App extends React.Component {
 
     render() {
      
-      if(!this.state.showEnter && !this.state.showTimesUp && this.state.activeUsers != null && this.state.queueUsers != null) {
-        console.log(this.state.activeUsers)
+      if(!this.state.showEnter && !this.state.showTimesUp && this.state.activeUsers != null && this.state.queueUsers != null && this.state.isInQueue) {
       return (
         <Accordion>
           <Card>
@@ -147,8 +120,8 @@ class App extends React.Component {
                   <ListOfQueueUsers users={this.state.queueUsers}/>
                 </div>
                 <div>
-      <p><b>Number of people waiting: {this.state.queueUsers.length.toString()}</b></p>
-              <Button onClick={this.leaveQueue}>Leave</Button>
+      <p><b>Estimated Wait Time: {this.state.queueUsers.length * timeInMinutes} minutes</b></p>
+              <Button variant='link' onClick={this.leaveQueue}>Leave</Button>
               </div>
               </Card.Body>
             </Accordion.Collapse>
@@ -163,7 +136,7 @@ class App extends React.Component {
               </Modal.Body>
               <Modal.Footer>
                 <Button variant='primary' href={this.state.videoURL} target="_blank">Enter</Button>
-                <Button variant='primary' onClick={()=>{this.setState({showEnter:false})}}>Close</Button>
+                <Button variant='link' onClick={()=>{this.setState({showEnter:false})}}>Close</Button>
               </Modal.Footer>
             </Modal.Dialog>
           )

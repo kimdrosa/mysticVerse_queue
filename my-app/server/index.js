@@ -17,7 +17,7 @@ var server = new WebSocket.Server({server : app.listen(3333)});
 console.log('socket server is running on port 3333');
 
 const users = [];
-const maxTime =  30000;
+const maxTime =  60000;
 const userList = [];
 const activeUserList = [];
 const activeUsers = [{videoUrl : "https://en.wikipedia.org/wiki/Leprus_intermedius",
@@ -40,7 +40,7 @@ const activeUsers = [{videoUrl : "https://en.wikipedia.org/wiki/Leprus_intermedi
 server.on('connection', (socket) => {
  
     socket.on('message', message => {
-  
+
         let userInfo = JSON.parse(message);
         
         socket.id = userInfo.uuid;
@@ -69,8 +69,9 @@ server.on('connection', (socket) => {
                     } else if (checkTimeOut(activeUsers[i])) {
                         activeUsers[i].user = null;
                         activeUserList.shift();
-                        if(socket.readyState != 3) {
-                        activeUsers[i].connection.send("Times Up!")
+                        
+                        if(activeUsers[i].connection.readyState != 3) {
+                            activeUsers[i].connection.send("Times Up")
                         }
                     }
                 }
@@ -80,13 +81,18 @@ server.on('connection', (socket) => {
                     for(var k = 0; k < users.length; k++){
                         if(users[k].uuid === socket.id) {
                             users.splice(k,1);
+                            userList.splice(k,1);
                         }
                     }
                     for(var j = 0; j < activeUsers.length; j++) {
                         if(activeUsers[j].uuid === socket.id){
-                            users.splice(j, 1)
+                            activeUsers.splice(j, 1);
+                            activeUserList.splice(j,1);
+
                         }
                     }
+                    console.log('users : ' + users, 'activeUsers : ' + activeUsers);
+                    
                 }
                 
                 

@@ -8,7 +8,7 @@ class ListOfActiveUsers extends React.Component{
     }
 
     render(){
-        console.log('props : ' + this.props.users)
+       
         if(this.props.users.length) {
         return (
         <div className='listOfActiveUsers'>
